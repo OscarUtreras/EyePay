@@ -46,3 +46,4 @@ def product_detail(request, pk):
     elif request.method == 'DELETE':
         product.delete()
         return HttpResponse(status=204)
+
