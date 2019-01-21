@@ -6,6 +6,8 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from core.models import Product
 from core.serializers import ProductSerializer
+from core.models import Claim
+from core.serializers import ClaimSerializer
 
 # Create your views here.
 
@@ -47,3 +49,16 @@ def product_detail(request, pk):
         product.delete()
         return HttpResponse(status=204)
 
+@csrf_exempt
+def claim_list(request):
+    if request.method == 'GET':
+        claims = Claim.objects.all()
+        serializer = ClaimSerializer(claims, many=True)
+        return  JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ClaimSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        return JsonResponse(serializer.errors, status = 400)
