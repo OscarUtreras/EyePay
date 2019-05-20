@@ -8,6 +8,9 @@ from core.models import Product
 from core.serializers import ProductSerializer
 from core.models import Claim
 from core.serializers import ClaimSerializer
+from core.Ocr.ocr import imgToText
+from PIL import Image
+import os
 
 # Create your views here.
 
@@ -53,6 +56,10 @@ def product_detail(request, pk):
 def claim_list(request):
     if request.method == 'GET':
         claims = Claim.objects.all()
+        THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+        my_file = os.path.join(THIS_FOLDER, 'IMG_1908.JPG')
+        im = Image.open(my_file)
+        imgToText(im)
         serializer = ClaimSerializer(claims, many=True)
         return  JsonResponse(serializer.data, safe=False)
     elif request.method == 'POST':
